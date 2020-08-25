@@ -13,9 +13,7 @@ A roguelike for the Commander X16
 * permadeath.  You have one life.
 
 # Gameplay
-* turn-based 
-        q quaff a potion
-        e eat some food
+* turn-based, using cursor keys to move, and the keyboard for one-letter commands
 
 * non-modal
   - many ways to do things
@@ -33,16 +31,14 @@ A roguelike for the Commander X16
   
 # Objects
 * obscure objects
-  - newly discovered objects only offer a vague physical description that is randomized between games
-  - Describe by color, and only later reveal its True Name via use/experimentation
-  - purposes and capabilities are unstated
-  - the identity of magical/enchanted items varies from run to run.  
-  - "Bubbly potion" might heal in one game and poison in another.
+  - newly discovered objects only offer a color, e.g. a "blue sword"
+  - purpose/capability is unstated
+  - its True Name is revealed via use/experimentation
+  - the identity of magical/enchanted items varies from run to run
+     e.g. a "Bubbly potion" might heal in one game and poison in another.
 
 * object types
   - food
-  - Wands
-  - Potions
-  - Rings
+  - Magic potions, wands, staves, rings
   - Weapons
   - Armor
