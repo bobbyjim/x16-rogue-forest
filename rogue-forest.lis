@@ -1,0 +1,328 @@
+
+rem 
+rem  initialize descriptors
+rem 
+dim m$(31)
+for x=0 to 31 :read m$(x) :next
+data  Doppleganger,  Abalone,  Basilisk,    Centaur,    Dragon
+data  Ettin,         Fuzzy,    Ghoul,       Hellhound,  Imp
+data  Jinn,          Kobold,   Leprechaun,  Minotaur,   Nymph
+data  Orc,           Python,   Quagga,      Rattler,    Skeleton
+data  Troll,         Ur-vile,  Vampire,     Wraith,     Xeroc
+data  Yeti,          Zombie,   Wyvern,      Manticore,  Velociraptor
+data  Sphinx,        Spider
+
+for x=0 to 7 :read n$(x) :next
+data  Durin, Folgar, Sara, Sharik, Zog, Cheney, Rejnaldi, Khaalo
+
+for x=0 to 7 :read c$(x) :next
+data  "",red,green,blue,yellow,white,silver,golden
+
+for x=0 to 7 :read d$(x) :next
+data  "",of war,of agility,of enduring,of cleverness,of skill,"",of magic
+
+for x=0 to 7 :read w$(x) :next
+data dagger, quarterstaff, hammer, axe, sword, great axe, claymore, halberd
+
+for x=0 to 7 :read a$(x) :next
+data leather, studded leather, hauberk, ringmail, scale mail, plate mail
+data enchanted mail, mithril
+
+rem --------------
+rem  line-cleaner
+rem --------------
+li$ = "                                                           "
+
+rem ------------------------
+rem  set up video registers
+rem ------------------------
+poke $9f2d, %01100000 :rem map height=1, width=2 = 64x128 tiles
+poke $9f2e, %10000000 :rem map base addr = 128 x512 = $10000.
+poke $9f2f, %01111100 :rem tile base addr = 31 x2k  = $f800.
+rem also, tile ht=0, wd=0, so 8 pixels x 8 pixels
+
+rem 
+rem  no scrolling, please ($9f30-$9f33)
+rem 
+poke $9f30, 0
+poke $9f31, 0
+poke $9f32, 0
+poke $9f33, 0
+
+? chr$(147) "welcome to rogue forest"
+input "press <enter> to begin"; k$
+x=rnd(-ti) :rem init
+
+rem ----------------------------------
+rem   build forest
+rem   roughly 1/3 trees, 2/3 clearing
+rem ----------------------------------
+color 1,0 :cls  :rem 0=transparent
+fo(0) = $41 :rem tree
+fo(1) = $2e :rem dot
+fo(2) = $2e :rem dot
+fo(3) = $43 :rem horiz line
+fo(4) = $42 :rem vert line
+fo(5) = $25 :rem treasure
+fo(6) = $2a :rem amulet of yendor
+
+poke $9f29, %00110001 :rem $31=layers 1,0. Output mode=1 (VGA)
+
+print "\x13\x11\x11\x11\x11color 1,6\x13" 
+; if vpeek(1,0)=fo(0) goto {:hide-bkgd}
+; else
+cc=0
+rem ----------------------------------------------------------
+rem  we can speed up this routine by unrolling the loop a bit
+rem  one at a time = 17 sec
+rem  two at a time = 13 sec
+rem  three at a time = 12.5 sec
+rem  four at a time = 12 sec
+rem ----------------------------------------------------------
+cl=$05  :rem bg/fg color nybbles ($15=white under green)
+mn=0    :rem monster number (0-31)
+dim ma(31) :rem monster address
+dim xm(31),ym(31) :rem monster x,y
+dim so(31) :rem what the monster is standing on
+for Y=0 to 45
+   Y0=y*$100
+   for X=0 to 158 step 8
+      p=y0+x
+
+      if y<5 or y>40 goto {:draw-nothingness}
+      if x<4 or x>150 goto {:draw-nothingness}
+;     else
+         ff=3 
+         if y>5 and y<40 then ff=int(rnd(1)*3) 
+         vpoke 1,P,fo(ff)       :rem character index
+         vpoke 1,P+1,cl        :rem bg/fg color nybbles
+
+         if y>5 and y<40 then ff=int(rnd(1)*3) 
+         vpoke 1,P+2,fo(ff)
+         vpoke 1,P+3,cl              
+
+         if y>5 and y<40 then ff=int(rnd(1)*3) 
+         vpoke 1,P+4,fo(ff)
+         vpoke 1,P+5,cl              
+
+         if y>5 and y<40 then ff=int(rnd(1)*3) 
+         vpoke 1,P+6,fo(ff)
+         vpoke 1,P+7,cl              
+
+         if y<6 or y>39 goto {:draw-done}
+
+         rem treasure and/or critter
+         if rnd(1) > 0.06 goto {:draw-done}
+            xx = int(rnd(4))
+            vpoke 1,p+2*xx,$25 
+            goto {:draw-done}
+
+{:draw-nothingness}
+            vpoke 1,p,$20
+            vpoke 1,p+1,cl
+            vpoke 1,p+2,$20
+            vpoke 1,p+3,cl
+            vpoke 1,p+4,$20
+            vpoke 1,p+5,cl
+            vpoke 1,p+6,$20
+            vpoke 1,p+7,cl
+;     fi
+{:draw-done}
+   next
+{:skip}
+next
+
+rem
+rem place monsters
+rem
+for m = 0 to 31
+   x = 10 + int(rnd(1)*60)
+   y = 10 + int(rnd(1)*20)
+   ma = y * $100 + x * 2
+   ma(m) = ma
+   xm(m)=x
+   ym(m)=y
+   so(m) = vpeek(1,ma)
+   vpoke 1,ma,m
+next
+
+rem draw the amulet of yendor
+vpoke 1, int(rnd(1)*25+10) * $100 + int(rnd(1)*50+20) * 2, $2a
+
+rem
+rem  hide background
+rem
+{:hide-bkgd}
+color 1,6 :cls :rem white on blue
+
+rem
+rem  initialize drawing util
+rem
+dim vp$(60)
+vp$(0)="\x13"
+for v=1 to 60
+   vp$(v) = vp$(v-1) + "\x11"
+next
+
+;py$="\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11"
+;py$=py$+"\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11"
+;py$=py$+"\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11"
+;py$=py$+"\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11"
+;py$=py$+"\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11"
+;py$=py$+"\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11"
+;py$="\x13" + py$
+
+
+rem -------------------
+rem  initialize player
+rem -------------------
+x=10 :y=10 :rem position
+iw=0       :rem weapon inventory
+ia=0       :rem armor inventory
+it=0       :rem treasure inventory
+ps=int(rnd(1)*50+50)  :rem player strength
+pd=int(rnd(1)*50+50)  :rem player dexterity
+pe=int(rnd(1)*50+50)  :rem player endurance
+pi=int(rnd(1)*50+50)  :rem player intelligence
+
+rem --------------------------------
+rem   clear 9x9 grid around player
+rem --------------------------------
+{:draw}
+? vp$(y-4); :rem left$(py$,y);
+color 1,0 :rem transparent (clears fog)
+for i=1 to 9
+   ? tab(x-4) "         "
+next
+
+rem
+rem   print player
+rem
+color 1,6
+? "\x91\x91\x91\x91\x91" tab(x) "@"
+
+rem
+rem   position cursor for events
+rem
+? vp$(46);
+
+rem
+rem   player movement
+rem
+{:inkey} get a$ :if a$="" goto {:inkey}
+xx=0:yy=0
+if a$="\x11" then yy=+1 :rem down
+if a$="\x91" then yy=-1 :rem up
+if a$="\x1d" then xx=+1 :rem right
+if a$="\x9d" then xx=-1 :rem left
+
+lo = vpeek(1,(y+yy)*$100 + (x+xx)*2)
+if lo < $20 then nn=lo :gosub {:hit-the-monster} :goto {:do-a-monster-check}
+if lo < $41 then x=x+xx :y=y+yy
+if lo = $25 then gosub {:treasure}
+if lo = $2a then gosub {:yendor}
+{:do-a-monster-check}
+for nn=0 to 31
+   aa=ma(nn)
+   xx=xm(nn)-x
+   yy=ym(nn)-y
+   if abs(xx) < 2 and abs(yy) < 2 then gosub {:monster-attacks} :goto {:skip-move-monster}
+   if rnd(1)>0.5 then {:skip-move-monster}
+   if abs(xx) < 9 and abs(yy) < 9 then gosub {:move-monster}
+{:skip-move-monster}
+next
+if (x<70) and (x>3) and (y<40) and (y>5) goto {:draw}
+
+COLOR 1,$06 :rem white on blue
+
+end
+
+{:treasure}
+color 1,6
+vpoke 1,y*$100 + x*2, $2e  :rem clear it
+
+t1=int(rnd(1)*8)
+t2=int(rnd(1)*8)
+t3=int(rnd(1)*8)
+t4=int(rnd(1)*8)
+
+tt=int(rnd(1)*2)
+if tt=0 goto {:treasure-weapon}
+if tt=1 goto {:treasure-armor}
+
+{:treasure-weapon}
+? "you found " n$(t1) "'s " c$(t2) " " w$(t3) " " d$(t4)
+input "do you keep it"; yn$
+? "\x91\x91" li$ :? li$
+if yn$ = "y" then iw = t1 + t2 * 8 + t3 * 64 + t4 * 256
+return
+
+{:treasure-armor}
+? "you found " n$(t1) "'s " c$(t2) " " a$(t3) " " d$(t4)
+input "do you keep it"; yn$
+? "\x91\x91" li$ :? li$
+if yn$ = "y" then ia = t1 + t2 * 8 + t3 * 64 + t4 * 256
+return
+
+
+{:yendor}
+color 1,6
+? "you found the amulet of yendor! "
+input "press <enter>"; yn$
+? "\x91\x91" li$ :? li$
+vpoke 1,y*$100 + x*2, $2e  :rem clear it
+py=1  :rem player-yendor
+return
+
+rem
+rem  move monster
+rem  - nn is the monster number (0-31)
+rem  - address in aa
+rem  - relative pos in xx,yy
+{:move-monster}
+vpoke 1,aa,so(nn)  :rem redraw tile
+dx=0 :dy=0
+if xx<0 then aa=aa+2 :dx=1 :goto {:move-monster-set}
+if xx>0 then aa=aa-2 :dx=-1 :goto {:move-monster-set}
+if yy<0 then aa=aa+$100 :dy=1 :goto {:move-monster-set}
+if yy>0 then aa=aa-$100 :dy=-1 :goto {:move-monster-set}
+{:move-monster-set}
+v=vpeek(1,aa)
+if v < $20 or v = $2a goto {:move-monster-done}
+so(nn)=vpeek(1,aa)
+ma(nn)=aa
+xm(nn)=xm(nn)+dx
+ym(nn)=ym(nn)+dy
+vpoke 1,aa,nn
+{:move-monster-done}
+return
+
+rem 
+rem  monster attacks (monster is nn)
+rem 
+{:monster-attacks}
+w = int(rnd(1)*10)
+? "the " m$(nn) " hits you for" w "points."
+input "press <enter>"; yn$
+? "\x91\x91" li$ :? li$
+ps = ps - w
+return
+
+rem 
+rem  attack the monster (monster is nn)
+rem 
+{:hit-the-monster}
+t1 = iw and 7
+t2 = (iw/8) and 7
+t3 = (iw/64) and 7
+t4 = (iw/256) and 7
+t5 = t1+t2+t3+t4+4
+w = int(rnd(1)*t5*2)
+? "you hit the " m$(nn) " for" w "points";
+if w > rnd(1)*nn then ? ", killing it";: vpoke 1,ma(nn),$2e :ym(nn)=-1000
+? "."
+input "press <enter>"; yn$
+? "\x91\x91" li$ :? li$
+return
+
+
