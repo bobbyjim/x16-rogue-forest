@@ -1,3 +1,6 @@
+b1$ = "  ÕÃÃÕÀÉÕÀÉÂ ÂÕÀÀ  ÕÃÃÕÀÉÕÃÃÕÀÀÕÀÃÀ²À "
+b2$ = "  Â  ÊÀËÊÀÛÊÀË«À   «À ÊÀËÂ  «À ÊÀÉ Â  "
+b3$ = "         ÀË   ÊÀÀ  Â        ÊÀÀÃÀË0.5 "
 
 ;   ------------------------
 rem  initialize descriptors
@@ -49,7 +52,10 @@ poke $9f31, 0
 poke $9f32, 0
 poke $9f33, 0
 
-? chr$(147) "welcome to rogue forest"
+? chr$(147)
+? b1$ :? b2$ :? b3$  :rem banner
+? 
+? "welcome to rogue forest"
 input "press <enter> to begin"; k$
 x=rnd(-ti) :rem init
 
@@ -67,7 +73,7 @@ fo(6) = $2a :rem amulet of yendor
 
 poke $9f29, %00110001 :rem $31=layers 1,0. Output mode=1 (VGA)
 
-print "\x13\x11\x11\x11\x11color 1,6\x13" 
+; print "\x13\x11\x11\x11\x11color 1,6\x13" 
 ; if vpeek(1,0)=fo(0) goto {:hide-bkgd}
 ; else
 cc=0
@@ -80,32 +86,32 @@ mn=0
 dim ma(31)
 dim xm(31),ym(31)
 dim so(31) :rem terrain the monster is .s.tanding .o.n
-for Y=0 to 45
+for Y=0 to 59
    Y0=y*$100
    for X=0 to 158 step 8
       p=y0+x
 
-      if y<5 or y>40 goto {:draw-nothingness}
+      if y<7 or y>42 goto {:draw-nothingness}
       if x<4 or x>150 goto {:draw-nothingness}
 ;     else
          ff=3 
-         if y>5 and y<40 then ff=int(rnd(1)*3) 
+         if y>7 and y<42 then ff=int(rnd(1)*3) 
          vpoke 1,P,fo(ff) :rem character index
          vpoke 1,P+1,cl   :rem bg/fg color nybbles
 
-         if y>5 and y<40 then ff=int(rnd(1)*3) 
+         if y>7 and y<42 then ff=int(rnd(1)*3) 
          vpoke 1,P+2,fo(ff)
          vpoke 1,P+3,cl              
 
-         if y>5 and y<40 then ff=int(rnd(1)*3) 
+         if y>7 and y<42 then ff=int(rnd(1)*3) 
          vpoke 1,P+4,fo(ff)
          vpoke 1,P+5,cl              
 
-         if y>5 and y<40 then ff=int(rnd(1)*3) 
+         if y>7 and y<42 then ff=int(rnd(1)*3) 
          vpoke 1,P+6,fo(ff)
          vpoke 1,P+7,cl              
 
-         if y<6 or y>39 goto {:draw-done}
+         if y<8 or y>41 goto {:draw-done}
 
          rem treasure and/or critter
          if rnd(1) > 0.06 goto {:draw-done}
@@ -133,7 +139,7 @@ rem  place monsters
 ;   ----------------
 for m = 0 to 31
    x = 10 + int(rnd(1)*60)
-   y = 10 + int(rnd(1)*20)
+   y = 10 + int(rnd(1)*30)
    ma = y * $100 + x * 2
    ma(m) = ma
    xm(m)=x
@@ -143,11 +149,13 @@ for m = 0 to 31
 next
 
 rem amulet of yendor
-vpoke 1, int(rnd(1)*25+10) * $100 + int(rnd(1)*50+20) * 2, $2a
+vpoke 1, int(rnd(1)*30+10) * $100 + int(rnd(1)*60+10) * 2, $2a
 
 rem hide background
 {:hide-bkgd}
 color 1,6 :cls :rem white on blue
+
+? b1$ : ? b2$ : ? b3$
 
 rem initialize drawing util
 dim vp$(60)
@@ -170,7 +178,7 @@ l5$ = "\x91\x91\x91\x91\x91" :rem left 5
 ;   -------------------
 rem  initialize player
 ;   -------------------
-x=10 :y=10 :rem position
+x=int(rnd(1)*50+10) :y=int(rnd(1)*30+10) :rem position
 sc=0 :hu=0 :rem score, hunger level
 iw=0 :ia=0 :it=0  :rem inventories (weapon, armor, treasure)
 ps=int(rnd(1)*50+50)  :rem str
@@ -197,7 +205,7 @@ rem print player and position cursor
 rem
 color 1,6
 ? l5$ tab(x) "@"
-? vp$(43) ps "/" qs, pd "/" qd, pe "/" qe, pi "/" qi, sc, hu
+? vp$(43) li$ : ? "\x91STR" ps "score:" sc
 ? vp$(46);
 
 rem player movement
