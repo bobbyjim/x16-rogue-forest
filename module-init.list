@@ -3,12 +3,7 @@ rem  initialize
 ;   ------------
 {:initialize}
 
-rem initialize drawing util
-dim vp$(60)
-vp$(0)="\x13"
-for v=1 to 60
-   vp$(v) = vp$(v-1) + "\x11"
-next
+gosub {:vertical-position.init} :rem init vp$()
 
 l5$ = "\x91\x91\x91\x91\x91" :rem left 5
 
@@ -29,18 +24,17 @@ for x=0 to 7 :read n$(x) :next
 data Cheney, Durin, Fargol, Khaalo, Rejnaldi, Sara, Sharik, Zog
 
 for x=0 to 7 :read c$(x) :next
-data "","red ","green ","blue ","yellow ","white ","silver ","golden "
+data "","red ","green ","blue ","tin ","white ","pale ","gold "
 
 for x=0 to 7 :read d$(x) :next
-data ""," of war"," of agility"," of enduring"," of cunning"
+data ""," of war"," of agility"," of pain"," of cunning"
 data " of skill",""," of magic"
 
 for x=0 to 7 :read w$(x) :next
-data dagger, staff, hammer, axe, sword, great axe, claymore, halberd
+data dagger, staff, hammer, machete, axe, sword, labrys, halberd
 
 for x=0 to 7 :read a$(x) :next
-data leather, hauberk, ringmail, chain mail, splint, plate mail
-data enchanted mail, mithril
+data leather, hauberk, ringmail, mesh, mail, splint, plate, mithril
 
 rem forest elements
 fo(0) = $41 :rem tree

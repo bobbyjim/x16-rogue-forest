@@ -48,7 +48,8 @@ gosub {:treasure-util-position-line}
 
 gosub {:treasure-util-erase-lines}
 if yn$ = "n" then return
-\armor = t1 + t2 * 8 + t3 * 64 + t4 * 256
+\armor = t1 + t2 +t3 + t4 
+; \armor = t1 + t2 * 8 + t3 * 64 + t4 * 256
 \armor$ = ad$
 return
 

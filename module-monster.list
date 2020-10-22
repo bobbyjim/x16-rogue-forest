@@ -37,7 +37,7 @@ rem                  monster nn attacks
 w = int(rnd(1)*4)
 if int(rnd(1)*40) < \armor then w=0
 if w=0 then ? "the " m$(nn) " misses."
-if w>0 then ? "the " m$(nn) " hits you for" w "points." :gosub {:sound-explode}
+if w>0 then ? "the " m$(nn) " hits you for" w "points." :gosub {:sound-shoot}
 \str = \str - w
 return
 

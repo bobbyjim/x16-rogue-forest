@@ -30,7 +30,9 @@ poke $9f29, %00110001 :rem $31=layers 1,0. Output mode=1 (VGA)
 ; print "\x13\x11\x11\x11\x11color 1,6\x13"
 ; if vpeek(1,0)=fo(0) goto {:hide-bkgd}
 ; else
-cc=0
+cc=0:cd=59 
+if vpeek(1,0) = 32 then cc=8 :cd=40
+
 ;   ----------------------------------------------------------
 rem  unrolling this loop shaves 5 secs
 ;   ----------------------------------------------------------
@@ -40,7 +42,7 @@ mn=0
 dim ma(31)
 dim xm(31),ym(31)
 dim so(31) :rem terrain the monster is .s.tanding .o.n
-for Y=0 to 59
+for Y=cc to cd
    Y0=y*$100
    for X=0 to 158 step 8
       p=y0+x

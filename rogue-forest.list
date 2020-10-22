@@ -1,20 +1,20 @@
 rem
-rem ÕÃÃÕÀÉÕÀÉÂ ÂÕÀÀ  ÕÃÃÕÀÉÕÃÃÕÀÀÕÀÃÀ²À 
-rem Â  ÊÀËÊÀÛÊÀË«À   «À ÊÀËÂ  «À ÊÀÉ Â 
-rem        ÀË   ÊÀÀ  Â        ÊÀÀÃÀË
+rem "ÕÃÃÕÀÉÕÀÉÂ ÂÕÀÀ  ÕÃÃÕÀÉÕÃÃÕÀÀÕÀÃÀ²À "
+rem "Â  ÊÀËÊÀÛÊÀË«À   «À ÊÀËÂ  «À ÊÀÉ Â  "
+rem "       ÀË   ÊÀÀ  Â        ÊÀÀÃÀË    "
 rem
 ;   -------------------
 rem  initialize player
 ;   -------------------
-longvar \name      p0
-longvar \playerx   p1
-longvar \playery   p2
-longvar \score     p3
-longvar \hunger    p4
-longvar \food      p5
-longvar \weapon    p6
-longvar \armor     p7
-longvar \yendor    p8
+longvar \name      r0
+longvar \playerx   r1
+longvar \playery   r2
+longvar \score     r3
+longvar \hunger    r4
+longvar \food      r5
+longvar \weapon    r6
+longvar \armor     r7
+longvar \yendor    r8
 
 longvar \upp	   c0
 longvar \str       c1
@@ -25,8 +25,9 @@ longvar \int       c5
 
 longvar \tempmessage t0
 
-gosub {:initialize} :rem init game
-gosub {:sound-init} :rem init sound
+gosub {:initialize}  :rem init game
+gosub {:sound-init}  :rem init sound
+gosub {:panels.init} :rem init panels
 
 ;   --------------
 rem  line-cleaner
@@ -66,7 +67,7 @@ rem                       draw the screen
 ; =====================================================================
 rem hide background
 color 1,6 :cls :rem white on blue
-gosub {:title-print} :rem title
+gosub {:title.print} :rem title
 gosub {:inventory}
 
 ;   ----------------------------------
@@ -115,7 +116,7 @@ for nn=0 to 31
 {:skip-move-monster}
 next
 
-if \str < 0 goto {:game-over}
+if \str < 1 goto {:game-over}
 if (\playerx<76) and (\playerx>3) and (\playery<42) and (\playery>5) goto {:draw}
 
 ; =======================================================================
@@ -128,19 +129,27 @@ rem                      game over - print score
 {:game-over}
 COLOR 1,$06 :rem white on blue
 ? chr$(147) :rem clr
-? vp$(4); 
-if \str < 1 and \yendor = 0 then ? "you died." :? vp$(\playery) tab(\playerx) chr$($7b) vp$(50)
-if \str < 1 and \yendor = 1 then ? "you almost made it, but you died."
-if \str > 0 and \yendor = 1 then ? "you escaped the forest with the amulet!"
-if \str > 0 and \yendor = 0 then ? "you escaped the forest."
-? "score=" \score
+? vp$(3)
+? spc(6) "*** Game over ***" 
+?
+?:?spc(6) "Your accomplishments"
+?:?:? spc(6) "escaped the forest: ";
+if \str < 1 then ? "no"
+if \str > 0 then ? "yes"
 
+?:? spc(6) "found the amulet:   ";
+if \yendor = 0 then ? "no"
+if \yendor = 1 then ? "yes"
+
+?:?:? spc(6) "score:             " \score
+
+?:?:? spc(6) "thank you for playing rogue forest!"
 end
 
 {:inventory}
 ? vp$(45);
-? spc(20) li$: ? "\x91" spc(30) "weapon: " \weapon$
-? spc(20) li$: ? "\x91" spc(30) "armor : " \armor$
+? spc(20) li$: ? "\x91" spc(30) "weapon: " \weapon$ " (" \weapon ")"
+? spc(20) li$: ? "\x91" spc(30) "armor : " \armor$ " (" \armor ")"
 ? spc(20) li$: ? "\x91" spc(30) "food  : " \food
 ? spc(20) li$: ? "\x91" spc(30) "amulet: " \yendor$ 
 return
