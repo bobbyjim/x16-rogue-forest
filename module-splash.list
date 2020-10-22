@@ -1,0 +1,37 @@
+; =====================================================================
+;
+;
+rem                       splash screen!
+;
+;
+; =====================================================================
+{:splash-screen}
+? chr$(147)
+gosub {:title-print} :rem title
+?
+? "welcome to rogue forest"
+?
+? "map key"
+? "   @ ... you"
+? "   " chr$(fo(0)) " ... tree (impassable by you)"
+? "   " chr$(fo(1)) " ... clearing"
+? "   " chr$(fo(5)) " ... armor"
+? "   " chr$(fo(6)) " ... food"
+? "   " chr$(fo(8)) " ... weapon"
+? "   " chr$(fo(10))" ... amulet of yendor"
+?
+? "    Anything that moves is a monster"
+?
+? "command key"
+? "   ? ............ help"
+? "   cursor keys .. move/attack"
+? "   . ............ rest"
+? "   e ............ eat food"
+? "   x ............ exit"
+?
+
+input "please type your name"; \name$
+x=rnd(-ti)
+
+return
+
