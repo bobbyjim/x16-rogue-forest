@@ -70,40 +70,13 @@ sp$ = sp$ + "                    "
 sp$ = sp$ + "                    "
 return
 
-;{:panels.olddraw}
-;   ----------------------------------
-;REM  Panel(bx$)
-;REM  bx$ e.g. "00,04       31*29 MAP"
-;   ----------------------------------
-;WX%=VAL(LEFT$(BX$,2))
-;WY%=VAL(MID$(BX$,4,2))
-;d1%=val(mid$(bx$,7,2))
-;d2%=val(mid$(bx$,10,2))
-;WW%=VAL(MID$(BX$,13,2))
-;WH%=VAL(MID$(BX$,16,2))
-;LA$=MID$(BX$,19)
-;? vp$(wy%) spc(wx%)
-;b2$ = left$(ba$,ww%+2)
-;s2$ = left$(sp$,ww%)
-;? "\xd5\xc3" la$ "\xc3";
-;? hb$(ww% - 3 - len(la$));
-;? "\xc9\x11";
-;for rr=3 to wh%
-;? b2$ "\xc2" s2$ "\xc2\x11";
-;next
-;? b2$ "\xca";
-;? hb$(ww%-1); 
-;? "\xcb";
-;return
-
-
 ; ------------------------------------
 ;
 rem draw panels from variable data
 ;
 ; ------------------------------------
 {:panels.drawframe}
-? chr$(147); :rem clr
+;? chr$(147); :rem clr
 for n = 0 to \panel.count - 1
    ? vp$(\panel.top(n)) spc(\panel.left(n))
    ? "\xd5\xc3" \panel.label$(n) "\xc3";
@@ -158,6 +131,15 @@ return
 
 ; ------------------------------------------------------
 ;
+rem "delete" all panels
+;
+; ------------------------------------------------------
+{:panels.delete}
+\panel.count = 0
+return
+
+; ------------------------------------------------------
+;
 rem set contents of a panel
 rem n:panel num, bu$(): lines, lc: line count
 ;
@@ -167,4 +149,5 @@ for x = 0 to lc-1
    \panel.line$(n,x) = bu$(x)
 next
 return
+
 

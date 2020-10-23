@@ -33,11 +33,11 @@ rem                  monster nn attacks
 ;
 ; =======================================================================
 {:monster-attacks}
-? vp$(51) li$ : ? "\x91";
+? vp$(51) spc(6) li$ : ? "\x91";
 w = int(rnd(1)*4)
 if int(rnd(1)*40) < \armor then w=0
-if w=0 then ? "the " m$(nn) " misses."
-if w>0 then ? "the " m$(nn) " hits you for" w "points." :gosub {:sound-shoot}
+if w=0 then ? spc(6) "the " m$(nn) " misses."
+if w>0 then ? spc(6) "the " m$(nn) " hits you for" w "points." :gosub {:sound-shoot}
 \str = \str - w
 return
 
@@ -49,7 +49,7 @@ rem                  attack monster nn
 ;
 ; =======================================================================
 {:monster-is-attacked}
-? vp$(52) li$ : ? "\x91";
+? vp$(52) spc(6) li$ : ? "\x91";
 t1 = \weapon and 7
 t2 = (\weapon/8) and 7
 t3 = (\weapon/64) and 7
@@ -59,7 +59,7 @@ if t5 < 2 then t5 = 2
 w = int(rnd(1)*t5)
 hu=hu+1
 n=rnd(1) * nn
-? "you hit the " m$(nn) " for" w "points"; :gosub {:sound-shoot}
+? spc(6) "you hit the " m$(nn) " for" w "points"; :gosub {:sound-shoot}
 if w > n then ? ", killing it";: vpoke 1,ma(nn),$2e :ym(nn)=-1000 :\score=\score+w
 ? "."
 return

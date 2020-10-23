@@ -3,20 +3,20 @@ if peek($400)=0 then load "rf-effects.prg",8,1,$0400
 return
 
 {:sound-ping}
-sys $0400
-for t=1 to 1000 :x=sqr(9999) :next
+;sys $0400
+;for t=1 to 1000 :x=sqr(9999) :next
 return
 
 {:sound-shoot}
-sys $0403
-for t=1 to 1000 :x=sqr(9999) :next
+;sys $0403
+;for t=1 to 1000 :x=sqr(9999) :next
 return
 
 {:sound-zap}
-sys $0406
+;sys $0406
 return
 
 {:sound-explode}
-sys $0409
-for t=1 to 1000 :x=sqr(9999) :next
+;sys $0409
+;for t=1 to 1000 :x=sqr(9999) :next
 return

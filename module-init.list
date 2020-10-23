@@ -45,6 +45,8 @@ fo(4) = $42 :rem vert line
 fo(5) = $23 :rem armor (#)
 fo(6) = $24 :rem food ($)
 fo(7) = $27 :rem weapon (')
+fo(8) = $27
+fo(9) = $24
 fo(10) = $2a :rem amulet of yendor
 
 return

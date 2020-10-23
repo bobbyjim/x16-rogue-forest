@@ -94,9 +94,16 @@ next
 ;   ----------------
 rem  place monsters
 ;   ----------------
-for m = 0 to 31
+for m = 1 to 26 :rem 0 to 31
+{:place-monster}
    x = 10 + int(rnd(1)*60)
    y = 10 + int(rnd(1)*30)
+   
+   xx = abs(x-\playerx)
+   yy = abs(y-\playery)
+
+   if xx<6 and yy<6 goto {:place-monster} :rem too close!
+
    ma = y * $100 + x * 2
    ma(m) = ma
    xm(m)=x
