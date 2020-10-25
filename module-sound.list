@@ -1,5 +1,5 @@
 {:sound-init}
-if peek($400)=0 then load "rf-effects.prg",8,1,$0400
+;if peek($400)=0 then load "rf-effects.prg",8,1,$0400
 return
 
 {:sound-ping}
