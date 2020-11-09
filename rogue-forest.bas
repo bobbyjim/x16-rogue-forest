@@ -263,7 +263,7 @@
 1315 P7 = 0
 1320 DIM P0$(N)
 1325 DIM P1(N), P2(N), P3(N), P4(N)
-1330 DIM P5$(N,30), P6(N)
+1330 DIM P5$(N,30), P5SELECTED(N)
 1335 GOSUB 2230 :REM INIT VP$()
 1340 REM HORIZONTAL BAR ARRAY
 1345 DIM HB$(80)
@@ -326,7 +326,7 @@
 1630 P2(N) = L
 1635 P3(N) = W
 1640 P4(N) = H
-1645 P6(N) = -1
+1645 P5SELECTED(N) = -1
 1650 P7 = N + 1
 1655 RETURN
 1660 REM "DELETE" ALL PANELS
@@ -380,7 +380,7 @@
 1900 REM PRINT TITLE
 1905 ? "  ÕÃÃÕÀÉÕÀÉÂ ÂÕÀÀ  ÕÃÃÕÀÉÕÃÃÕÀÀÕÀÃÀ²À "
 1910 ? "  Â  ÊÀËÊÀÛÊÀË«À   «À ÊÀËÂ  «À ÊÀÉ Â  "
-1915 ? "         ÀË   ÊÀÀ  Â        ÊÀÀÃÀË0.9 "
+1915 ? "         ÀË   ÊÀÀ  Â        ÊÀÀÃÀË1.0 "
 1920 RETURN
 1925 REM                   TREASURE FINDS (TYPE IN 'LO')
 1930 COLOR 1,6
